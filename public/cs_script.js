@@ -5,6 +5,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
 // Firebase 구성
@@ -168,6 +169,15 @@ loginLink.addEventListener("click", (e) => {
   e.preventDefault();
   signupForm.style.display = "none";
   loginForm.style.display = "block";
+});
+
+// 사용자의 로그인 상태를 감지하고 상태를 유지
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    showUserProfile(user);
+  } else {
+    showLoginForm();
+  }
 });
 
 // 사용자 프로필 표시
