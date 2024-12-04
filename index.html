@@ -38,7 +38,17 @@
           isLogin = false;
         } else {
           loginText.innerHTML = "로그인";
-          googleLoginButton.style.display = "flex";
+          googleLoginButton.style = `display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 10px;
+  background-color: #67d6cc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;`;
           isLogin = true;
         }
       };
