@@ -29,10 +29,11 @@
         "login-method-change"
       );
       const loginText = document.getElementById("login-text");
-      function SignInForm() {
+      window.SignInForm = function () {
+        const loginText = document.getElementById("login-text");
         loginText.innerHTML =
-          loginText.innerHTML == "로그인" ? "회원가입" : "로그인";
-      }
+          loginText.innerHTML === "로그인" ? "회원가입" : "로그인";
+      };
     </script>
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
