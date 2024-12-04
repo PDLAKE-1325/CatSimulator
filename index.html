@@ -29,10 +29,17 @@
         "login-method-change"
       );
       const loginText = document.getElementById("login-text");
+      const googleLoginButton = document.getElementById("google-login");
+      var isLogin = true;
       window.SignInForm = function () {
-        const loginText = document.getElementById("login-text");
-        loginText.innerHTML =
-          loginText.innerHTML === "로그인" ? "회원가입" : "로그인";
+        loginText.innerHTML === "로그인" ? "회원가입" : "로그인";
+        if (isLogin) {
+          isLogin = false;
+          googleLoginButton.style.display = "none";
+        } else {
+          isLogin = true;
+          googleLoginButton.style.display = "block";
+        }
       };
     </script>
     <script type="module">
