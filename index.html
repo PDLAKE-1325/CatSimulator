@@ -30,14 +30,17 @@
       );
       const loginText = document.getElementById("login-text");
       const googleLoginButton = document.getElementById("google-login");
+      const loginLine = document.getElementById("draw-line");
       var isLogin = true;
       window.SignInForm = function () {
         if (isLogin) {
           loginText.innerHTML = "회원가입";
+          loginLine.style.display = "none";
           googleLoginButton.style.display = "none";
           isLogin = false;
         } else {
           loginText.innerHTML = "로그인";
+          loginLine.style.display = "flex";
           googleLoginButton.style = `display: flex;
             justify-content: center;
             align-items: center;
