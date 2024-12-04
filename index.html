@@ -8,48 +8,54 @@
   </head>
   <body>
     <div class="login-form">
-      <h2 id="login-text">로그인</h2>
-      <button id="google-login">
-        <img
-          src="/images/google_logo.svg"
-          width="20"
-          height="20"
-          id="google-logo"
+      <div id="login-div">
+        <h2 id="login-text">로그인</h2>
+        <button id="google-login">
+          <img
+            src="/images/google_logo.svg"
+            width="20"
+            height="20"
+            id="google-logo"
+          />
+          Google 로그인
+        </button>
+        <p id="draw-line"><span>또는</span></p>
+        <input type="email" placeholder="Enter Email" class="login-input" />
+        <input
+          type="password"
+          placeholder="Enter Password"
+          class="login-input"
         />
-        Google 로그인
-      </button>
-      <p id="draw-line"><span>또는</span></p>
-      <input type="email" placeholder="Enter Email" />
-      <input type="password" placeholder="Enter Password" />
-      <button id="login">로그인</button>
-      <span onclick="SignInForm()" id="login-method-change">회원가입</span>
+        <button id="login">로그인</button>
+        <span onclick="SignInForm()" id="login-method-change">회원가입</span>
+      </div>
+      <div id="signin-div">
+        <h2 id="login-text">회원가입</h2>
+        <input type="email" placeholder="Enter Email" class="signin-input" />
+        <input
+          type="password"
+          placeholder="Enter Password"
+          class="signin-input"
+        />
+        <button id="signin">회원가입</button>
+        <span onclick="SignInForm()" id="login-method-change">회원가입</span>
+      </div>
     </div>
     <script>
       const loginMethodChangeButton = document.getElementById(
         "login-method-change"
       );
-      const loginText = document.getElementById("login-text");
-      const googleLoginButton = document.getElementById("google-login");
-      const loginLine = document.querySelector("p#draw-line");
+      const loginPannel = document.getElementById("login-div");
+      const signinPannel = document.getElementById("signin-div");
       var isLogin = true;
       window.SignInForm = function () {
         if (isLogin) {
-          loginText.innerHTML = "회원가입";
-          loginLine.style.display = "none";
-          googleLoginButton.style.display = "none";
+          signinPannel.style.display = "flex";
+          loginPannel.style.display = "none";
           isLogin = false;
         } else {
-          loginText.innerHTML = "로그인";
-          loginLine.style.display = `margin-top: 5%;
-            margin-bottom: 5%;
-            width: 100%;
-            text-align: center;
-            border-bottom: 1px solid #000;
-            line-height: 0.1em;`;
-          googleLoginButton.style = `display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 10px;`;
+          signinPannel.style.display = "none";
+          loginPannel.style.display = "flex";
           isLogin = true;
         }
       };
