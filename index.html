@@ -8,7 +8,7 @@
   </head>
   <body>
     <div class="login-form">
-      <h2>로그인</h2>
+      <h2 id="login-text">로그인</h2>
       <button id="google-login">
         <img
           src="/images/google_logo.svg"
@@ -24,7 +24,16 @@
       <button id="login">로그인</button>
       <span onclick="SignInForm()" id="login-method-change">회원가입</span>
     </div>
-
+    <script>
+      const loginMethodChangeButton = document.getElementById(
+        "login-method-change"
+      );
+      const loginText = document.getElementById("login-text");
+      function SignInForm() {
+        loginText.innerHTML =
+          loginText.innerHTML == "로그인" ? "회원가입" : "로그인";
+      }
+    </script>
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
       import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
@@ -67,12 +76,8 @@
       const loginButton = document.getElementById("login");
 
       const loginWithGoogleButton = document.getElementById("google-login");
-      const loginMethodChangeButton = document.getElementById(
-        "login-method-change"
-      );
 
-      document.getElementById("google-login").addEventListener("click", () => {
-        alert("dk");
+      loginWithGoogleButton.addEventListener("click", () => {
         signInWithPopup(auth, provider)
           .then((result) => {
             const user = result.user;
