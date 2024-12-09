@@ -1,115 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MyohanMemory</title>
-    <link rel="stylesheet" href="cs_style.css" />
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="login-form">
-      <h2 id="login-text">로그인</h2>
-      <button id="google-login">
-        <img
-          src="/images/google_logo.svg"
-          width="20"
-          height="20"
-          id="google-logo"
-        />
-        Google 로그인
-      </button>
-      <p id="draw-line"><span>또는</span></p>
-      <input type="email" placeholder="Enter Email" />
-      <input type="password" placeholder="Enter Password" />
-      <button id="login">로그인</button>
-      <span onclick="SignInForm()" id="login-method-change">회원가입</span>
+    <header>
+      <nav>
+        <div class="logo">MyohanMemory</div>
+        <ul class="nav-links">
+          <li><a href="#">홈</a></li>
+          <li><a href="#">메모</a></li>
+          <li><a href="#">설정</a></li>
+        </ul>
+        <div class="auth-section">
+          <button id="auth-button">로그인</button>
+        </div>
+      </nav>
+    </header>
+
+    <div id="login-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2 id="login-text">로그인</h2>
+        <button id="google-login">
+          <img src="google-logo.svg" width="20" height="20" alt="Google 로고" />
+          Google 로그인
+        </button>
+        <p id="draw-line"><span>또는</span></p>
+        <input type="email" id="email" placeholder="이메일 입력" />
+        <input type="password" id="password" placeholder="비밀번호 입력" />
+        <button id="login-submit">로그인</button>
+        <span id="login-method-change">회원가입</span>
+      </div>
     </div>
-    <script>
-      const loginMethodChangeButton = document.getElementById(
-        "login-method-change"
-      );
-      const loginText = document.getElementById("login-text");
-      const googleLoginButton = document.getElementById("google-login");
-      const loginLine = document.querySelector("p#draw-line");
-      const loginSpan = document.querySelector("p span");
-      var isLogin = true;
-      window.SignInForm = function () {
-        if (isLogin) {
-          loginText.innerHTML = "회원가입";
-          loginLine.style.display = "none";
-          googleLoginButton.style.display = "none";
-          isLogin = false;
-        } else {
-          loginText.innerHTML = "로그인";
-          loginLine.style = `margin-top: 5%;
-            margin-bottom: 5%;
-            width: 100%;
-            text-align: center;
-            border-bottom: 1px solid #000;
-            line-height: 0.1em;`;
-          googleLoginButton.style = `display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 10px;`;
-          isLogin = true;
-        }
-      };
-    </script>
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-      import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
-      import {
-        getAuth,
-        GoogleAuthProvider,
-        signInWithPopup,
-        createUserWithEmailAndPassword,
-        signInWithEmailAndPassword,
-        signOut,
-        onAuthStateChanged,
-      } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-      import {
-        getDatabase,
-        ref,
-        get,
-      } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
 
-      const firebaseConfig = {
-        apiKey: "AIzaSyBFO4eVxwUJ-28HoD7Q13AaLxYBYHD4sBk",
-        authDomain: "catsimul.firebaseapp.com",
-        projectId: "catsimul",
-        storageBucket: "catsimul.firebasestorage.app",
-        messagingSenderId: "82898723961",
-        appId: "1:82898723961:web:ce2a076172c472e1f020a8",
-        measurementId: "G-TEDF2GCJ45",
-        // databaseURL: "https://catsimul-default-rtdb.firebaseio.com/",
-      };
-
-      const provider = new GoogleAuthProvider();
-      const app = initializeApp(firebaseConfig);
-      const analytics = getAnalytics(app);
-      // const database = getDatabase(app);
-      const auth = getAuth(app);
-
-      const loginForm = document.querySelector("#login-form");
-
-      const emailInput = document.getElementById("email");
-      const passwordInput = document.getElementById("password");
-      const loginButton = document.getElementById("login");
-
-      const loginWithGoogleButton = document.getElementById("google-login");
-
-      loginWithGoogleButton.addEventListener("click", () => {
-        signInWithPopup(auth, provider)
-          .then((result) => {
-            const user = result.user;
-            console.log("Google 로그인 성공:", user);
-            // closeLoginModal();
-          })
-          .catch((error) => {
-            console.error("Google 로그인 실패:", error.message);
-            alert("로그인 실패: " + error.message);
-          });
-      });
-    </script>
+    <script type="module" src="auth.js"></script>
   </body>
 </html>
