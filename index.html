@@ -16,7 +16,11 @@
           <li><a href="#">설정</a></li>
         </ul>
         <div class="auth-section">
-          <button id="auth-button">로그인</button>
+          <div id="user-profile" class="user-profile">
+            <img id="profile-image" src="" alt="프로필 이미지" />
+            <span id="user-name"></span>
+            <button id="logout-btn">로그아웃</button>
+          </div>
         </div>
       </nav>
     </header>
@@ -30,6 +34,7 @@
           Google 로그인
         </button>
         <p id="draw-line"><span>또는</span></p>
+        <input type="text" id="username" placeholder="사용자 이름" />
         <input type="email" id="email" placeholder="이메일 입력" />
         <input type="password" id="password" placeholder="비밀번호 입력" />
         <button id="login-submit">로그인</button>

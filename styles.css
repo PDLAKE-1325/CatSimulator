@@ -157,3 +157,39 @@ nav {
   padding: 0 10px;
   color: #999;
 }
+.user-profile {
+  display: none;
+  align-items: center;
+  gap: 10px;
+}
+
+.logged-in .user-profile {
+  display: flex;
+}
+
+#profile-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #333; /* 기본 검정 배경 */
+}
+
+#user-name {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+#logout-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+#logout-btn:hover {
+  background-color: #c0392b;
+}

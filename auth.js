@@ -7,6 +7,7 @@ import {
   createUserWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
+  updateProfile,
 } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
 
 const firebaseConfig = {
@@ -23,33 +24,23 @@ const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 
 // DOM Elements
-const authButton = document.getElementById("auth-button");
 const loginModal = document.getElementById("login-modal");
 const closeButton = document.querySelector(".close-button");
 const googleLoginButton = document.getElementById("google-login");
+const usernameInput = document.getElementById("username");
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 const loginSubmitButton = document.getElementById("login-submit");
 const loginMethodChangeButton = document.getElementById("login-method-change");
 const loginText = document.getElementById("login-text");
+const userProfile = document.getElementById("user-profile");
+const userNameDisplay = document.getElementById("user-name");
+const profileImage = document.getElementById("profile-image");
+const logoutButton = document.getElementById("logout-btn");
 
 let isLoginMode = true;
 
-// Modal Toggle
-authButton.addEventListener("click", () => {
-  loginModal.style.display = "block";
-});
-
-closeButton.addEventListener("click", () => {
-  loginModal.style.display = "none";
-});
-
-// Login/Signup Mode Toggle
-loginMethodChangeButton.addEventListener("click", () => {
-  isLoginMode = !isLoginMode;
-  loginText.textContent = isLoginMode ? "로그인" : "회원가입";
-  loginSubmitButton.textContent = isLoginMode ? "로그인" : "회원가입";
-});
+// 기존 모달 토글 및 로그인 모드 변경 코드 동일
 
 // Google Login
 googleLoginButton.addEventListener("click", () => {
@@ -68,6 +59,7 @@ googleLoginButton.addEventListener("click", () => {
 loginSubmitButton.addEventListener("click", () => {
   const email = emailInput.value;
   const password = passwordInput.value;
+  const username = usernameInput.value;
 
   if (isLoginMode) {
     // Login
@@ -84,7 +76,13 @@ loginSubmitButton.addEventListener("click", () => {
     // Signup
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        console.log("회원가입 성공:", userCredential.user);
+        const user = userCredential.user;
+        return updateProfile(user, {
+          displayName: username,
+        }).then(() => user);
+      })
+      .then((user) => {
+        console.log("회원가입 성공:", user);
         loginModal.style.display = "none";
       })
       .catch((error) => {
@@ -92,6 +90,17 @@ loginSubmitButton.addEventListener("click", () => {
         alert("회원가입 실패: " + error.message);
       });
   }
+});
+
+// Logout
+logoutButton.addEventListener("click", () => {
+  signOut(auth)
+    .then(() => {
+      console.log("로그아웃 성공");
+    })
+    .catch((error) => {
+      console.error("로그아웃 실패:", error);
+    });
 });
 
 // Auth State Listener
@@ -102,21 +111,22 @@ onAuthStateChanged(auth, (user) => {
 
   if (user) {
     // 로그인 상태일 때
-    authButton.textContent = "로그아웃";
-    authButton.onclick = () => {
-      signOut(auth)
-        .then(() => {
-          console.log("로그아웃 성공");
-        })
-        .catch((error) => {
-          console.error("로그아웃 실패:", error);
-        });
-    };
+    const displayName = user.displayName || "사용자";
+    userNameDisplay.textContent = displayName;
+
+    // 프로필 이미지 설정
+    if (user.photoURL) {
+      profileImage.src = user.photoURL;
+    } else {
+      // 기본 검정 배경 프로필 이미지
+      profileImage.src =
+        'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="black"><rect width="40" height="40" fill="black"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="16">' +
+        displayName.charAt(0).toUpperCase() +
+        "</text></svg>";
+    }
   } else {
     // 로그아웃 상태일 때
-    authButton.textContent = "로그인";
-    authButton.onclick = () => {
-      loginModal.style.display = "block";
-    };
+    userNameDisplay.textContent = "";
+    profileImage.src = "";
   }
 });
