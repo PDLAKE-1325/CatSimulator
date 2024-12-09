@@ -182,8 +182,8 @@ onAuthStateChanged(auth, async (user) => {
     userProfile.style.display = "flex";
     // User is logged in
     noGameDiv.style.display = "none";
-    gameDiv.style.display = "block";
-    gameFrame.style.display = "block";
+    gameDiv.style.display = "flex";
+    gameFrame.style.display = "flex";
 
     // Attempt to load saved game data
     const savedGameData = await loadGameData(user.uid);
@@ -205,7 +205,7 @@ onAuthStateChanged(auth, async (user) => {
     authButton.onclick = () => {
       loginModal.style.display = "block";
     };
-    noGameDiv.style.display = "block";
+    noGameDiv.style.display = "flex";
     gameDiv.style.display = "none";
     gameFrame.style.display = "none";
   }
