@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cat Interaction Game</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        position: relative;
+      }
+
+      body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url("backgroundImage.png") no-repeat center center;
+        background-size: cover;
+        opacity: 0.8;
+        z-index: -1;
+      }
+
+      .container {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .gauges {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background-color: rgba(1, 1, 1, 0.2);
+      }
+
+      .gauge {
+        display: flex;
+        flex-direction: column;
+        width: 200px;
+      }
+
+      .gauge label {
+        color: white;
+        font-size: 14px;
+        margin-bottom: 4px;
+      }
+
+      .bar {
+        height: 10px;
+        background: lightgray;
+        border-radius: 5px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      /* 게이지 색상 설정을 JavaScript로 처리하기 위해 기본 설정 없음 */
+      #hunger-bar,
+      #happiness-bar,
+      #cleanliness-bar {
+        position: relative;
+        background: lightgray;
+        border-radius: 5px;
+      }
+
+      .cat-area {
+        position: relative;
+        margin-top: 600px;
+      }
+
+      .cat {
+        width: 350px;
+        height: auto;
+      }
+
+      .items {
+        margin-left: 1400px;
+        margin-bottom: 100px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
+        bottom: 60px;
+        right: 20px;
+      }
+
+      .item {
+        width: 60px;
+        height: 60px;
+        margin-left: 10px;
+        background: #fff;
+        border: 2px solid #ccc;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        cursor: grab;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- 게이지 -->
+      <div class="gauges">
+        <div class="gauge">
+          <label>배고픔</label>
+          <div class="bar" id="hunger-bar" style="width: 0%"></div>
+        </div>
+        <div class="gauge">
+          <label>행복감</label>
+          <div class="bar" id="happiness-bar" style="width: 0%"></div>
+        </div>
+        <div class="gauge">
+          <label>청결도</label>
+          <div class="bar" id="cleanliness-bar" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- 고양이 -->
+      <div class="cat-area" id="cat">
+        <img src="cat.png" alt="Cat" class="cat" />
+      </div>
+
+      <!-- 드래그 가능한 아이템 -->
+      <div class="items">
+        <div class="item" id="food" draggable="true">🍖</div>
+        <div class="item" id="pet" draggable="true">🖐️</div>
+        <div class="item" id="clean" draggable="true">🧹</div>
+      </div>
+    </div>
+
+    <script>
+      // 게이지와 아이템, 고양이 선택
+      const hungerBar = document.getElementById("hunger-bar");
+      const happinessBar = document.getElementById("happiness-bar");
+      const cleanlinessBar = document.getElementById("cleanliness-bar");
+      const cat = document.getElementById("cat");
+      const items = document.querySelectorAll(".item");
+
+      // 드래그 시작 이벤트
+      items.forEach((item) => {
+        item.addEventListener("dragstart", (e) => {
+          e.dataTransfer.setData("item-id", e.target.id);
+        });
+      });
+
+      // 고양이 드롭 영역 이벤트
+      cat.addEventListener("dragover", (e) => {
+        e.preventDefault(); // 드롭 가능하도록 설정
+      });
+
+      cat.addEventListener("drop", (e) => {
+        e.preventDefault();
+        const itemId = e.dataTransfer.getData("item-id");
+
+        // 각 아이템의 동작 처리
+        switch (itemId) {
+          case "food":
+            updateGauge(hungerBar, 20, "배고픔", "orange");
+            break;
+          case "pet":
+            updateGauge(happinessBar, 20, "행복감", "yellow");
+            break;
+          case "clean":
+            updateGauge(cleanlinessBar, 20, "청결도", "blue");
+            break;
+          default:
+            alert("알 수 없는 동작입니다.");
+        }
+      });
+
+      // 게이지 업데이트 함수
+      function updateGauge(bar, amount, type, color) {
+        const currentWidth = parseInt(bar.style.width || "0");
+        const newWidth = Math.min(100, currentWidth + amount); // 최대 100까지 제한
+
+        // 게이지 색상과 너비 업데이트
+        bar.style.width = newWidth + "%";
+        bar.style.backgroundColor = color;
+
+        // 게이지가 완전히 채워졌을 때 알림 표시
+        if (newWidth === 100) {
+          setTimeout(() => alert(`${type} 게이지가 가득 찼어요!`), 100);
+        }
+      }
+    </script>
+  </body>
+</html>
