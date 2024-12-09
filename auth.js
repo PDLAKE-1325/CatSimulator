@@ -15,6 +15,7 @@ import {
   doc,
   setDoc,
   getDoc,
+  deleteDoc,
 } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -69,22 +70,53 @@ async function loadGameData(userId) {
     const docRef = doc(db, "users", userId, "gameData", "catSimulation");
     const docSnap = await getDoc(docRef);
 
-    if (docSnap.exists()) {
-      const gameData = docSnap.data();
-      return {
-        hunger: gameData.hunger,
-        happiness: gameData.happiness,
-        cleanliness: gameData.cleanliness,
-        love: gameData.love,
-      };
-    } else {
-      console.log("No saved game data found");
-      return null;
-    }
+    return docSnap.exists() ? docSnap.data() : null;
   } catch (error) {
-    console.error("Error loading game data:", error);
+    console.error("게임 데이터 로드 중 오류:", error);
     return null;
   }
+}
+
+async function clearLocalGameData() {
+  // 로컬 스토리지 데이터 초기화
+  ["hunger_", "happy_", "clean_", "love_"].forEach((key) => {
+    localStorage.removeItem(key);
+  });
+
+  // iframe에 초기화 메시지 전송
+  const gameFrame = document.getElementById("game-frame");
+  gameFrame.contentWindow.postMessage({ type: "RESET_GAME_DATA" }, "*");
+}
+
+// 로그아웃 핸들러 추가
+async function handleLogout() {
+  const user = auth.currentUser;
+  if (user) {
+    // 현재 게임 상태 Firebase에 저장
+    const gameData = await getGameDataFromFrame();
+    if (gameData) {
+      await saveGameData(user.uid, gameData);
+    }
+
+    // 로컬 게임 데이터 초기화
+    clearLocalGameData();
+  }
+}
+
+function getGameDataFromFrame() {
+  return new Promise((resolve) => {
+    const gameFrame = document.getElementById("game-frame");
+
+    const messageHandler = (event) => {
+      if (event.data.type === "CURRENT_GAME_DATA") {
+        window.removeEventListener("message", messageHandler);
+        resolve(event.data.data);
+      }
+    };
+
+    window.addEventListener("message", messageHandler);
+    gameFrame.contentWindow.postMessage({ type: "GET_GAME_DATA" }, "*");
+  });
 }
 
 // Google Login
@@ -185,18 +217,16 @@ onAuthStateChanged(auth, async (user) => {
     gameDiv.style.display = "block";
     gameFrame.style.display = "block";
 
-    // Attempt to load saved game data
+    // 저장된 게임 데이터 확인
     const savedGameData = await loadGameData(user.uid);
-    if (savedGameData) {
-      // Send saved data to game iframe
-      gameFrame.contentWindow.postMessage(
-        {
-          type: "LOAD_GAME_DATA",
-          data: savedGameData,
-        },
-        "*"
-      );
-    }
+
+    gameFrame.contentWindow.postMessage(
+      {
+        type: savedGameData ? "LOAD_GAME_DATA" : "INIT_GAME_DATA",
+        data: savedGameData,
+      },
+      "*"
+    );
   } else {
     // 로그아웃 상태일 때
     authButton.style.display = "block";
@@ -242,4 +272,8 @@ window.addEventListener("message", async (event) => {
       await saveGameData(user.uid, event.data.data);
     }
   }
+});
+document.getElementById("logout-btn").addEventListener("click", async () => {
+  await handleLogout();
+  signOut(auth);
 });
