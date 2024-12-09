@@ -24,6 +24,7 @@ const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 
 // DOM Elements
+const authButton = document.getElementById("auth-button");
 const loginModal = document.getElementById("login-modal");
 const closeButton = document.querySelector(".close-button");
 const googleLoginButton = document.getElementById("google-login");
@@ -128,5 +129,18 @@ onAuthStateChanged(auth, (user) => {
     // 로그아웃 상태일 때
     userNameDisplay.textContent = "";
     profileImage.src = "";
+  }
+  if (user) {
+    // 로그인 상태일 때
+    authButton.style.display = "none";
+    userProfile.style.display = "flex";
+  } else {
+    // 로그아웃 상태일 때
+    authButton.style.display = "block";
+    userProfile.style.display = "none";
+    // 기존 로그인 모달 오픈 로직
+    authButton.onclick = () => {
+      loginModal.style.display = "block";
+    };
   }
 });
