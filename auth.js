@@ -96,8 +96,12 @@ loginSubmitButton.addEventListener("click", () => {
 
 // Auth State Listener
 onAuthStateChanged(auth, (user) => {
+  // 전체 body에 로그인 상태 클래스 추가
+  document.body.classList.toggle("logged-in", !!user);
+  document.body.classList.toggle("logged-out", !user);
+
   if (user) {
-    // User is signed in
+    // 로그인 상태일 때
     authButton.textContent = "로그아웃";
     authButton.onclick = () => {
       signOut(auth)
@@ -109,7 +113,7 @@ onAuthStateChanged(auth, (user) => {
         });
     };
   } else {
-    // User is signed out
+    // 로그아웃 상태일 때
     authButton.textContent = "로그인";
     authButton.onclick = () => {
       loginModal.style.display = "block";
