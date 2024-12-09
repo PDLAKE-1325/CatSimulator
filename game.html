@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cat Interaction Game</title>
+    <link rel="stylesheet" href="game_styles.css" />
+  </head>
+
+  <body>
+    <div class="container">
+      <!-- 게이지 -->
+      <div class="gauges">
+        <div class="gauge">
+          <label>배고픔</label>
+          <div class="bar" id="hunger-bar" style="width: 0%"></div>
+        </div>
+        <div class="gauge">
+          <label>행복감</label>
+          <div class="bar" id="happiness-bar" style="width: 0%"></div>
+        </div>
+        <div class="gauge">
+          <label>청결도</label>
+          <div class="bar" id="cleanliness-bar" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- 고양이 -->
+      <div class="cat-area" id="cat">
+        <div class="speech-bubble" id="love-text">낯선 사람</div>
+        <div class="speech-bubble-small0"></div>
+        <div class="speech-bubble-small1"></div>
+        <img src="/images/Game/cat.png" alt="Cat" class="cat" />
+      </div>
+
+      <!-- 드래그 가능한 아이템 -->
+      <div class="items">
+        <div class="item" id="food" draggable="true">🍖</div>
+        <div class="item" id="pet" draggable="true">🖐️</div>
+        <div class="item" id="clean" draggable="true">🧹</div>
+      </div>
+
+      <a
+        id="drop-cat"
+        target="_blank"
+        href="https://www.nias.go.kr/companion/new_petBoard.do?cmCode=M210521165829557"
+        >고양이 유기하기</a
+      >
+      <h2 id="love">친밀도 : 0</h2>
+    </div>
+
+    <script src="game_script.js"></script>
+  </body>
+</html>

@@ -10,6 +10,13 @@ import {
   updateProfile,
 } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
 
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyBFO4eVxwUJ-28HoD7Q13AaLxYBYHD4sBk",
   authDomain: "catsimul.firebaseapp.com",
@@ -22,6 +29,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
+const db = getFirestore(app);
 
 // DOM Elements
 const authButton = document.getElementById("auth-button");
@@ -40,6 +48,44 @@ const profileImage = document.getElementById("profile-image");
 const logoutButton = document.getElementById("logout-btn");
 
 let isLoginMode = true;
+
+async function saveGameData(userId, gameData) {
+  try {
+    await setDoc(doc(db, "users", userId, "gameData", "catSimulation"), {
+      hunger: gameData.hunger,
+      happiness: gameData.happiness,
+      cleanliness: gameData.cleanliness,
+      love: gameData.love,
+      timestamp: new Date(),
+    });
+    console.log("Game data saved successfully");
+  } catch (error) {
+    console.error("Error saving game data:", error);
+  }
+}
+
+async function loadGameData(userId) {
+  try {
+    const docRef = doc(db, "users", userId, "gameData", "catSimulation");
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const gameData = docSnap.data();
+      return {
+        hunger: gameData.hunger,
+        happiness: gameData.happiness,
+        cleanliness: gameData.cleanliness,
+        love: gameData.love,
+      };
+    } else {
+      console.log("No saved game data found");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error loading game data:", error);
+    return null;
+  }
+}
 
 // Google Login
 googleLoginButton.addEventListener("click", () => {
@@ -103,11 +149,13 @@ logoutButton.addEventListener("click", () => {
 });
 
 // Auth State Listener
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
   // 전체 body에 로그인 상태 클래스 추가
   document.body.classList.toggle("logged-in", !!user);
   document.body.classList.toggle("logged-out", !user);
-
+  const gameFrame = document.getElementById("game-frame");
+  const noGameDiv = document.querySelector(".noGame");
+  const gameDiv = document.querySelector(".Game");
   if (user) {
     // 로그인 상태일 때
     const displayName = user.displayName || "사용자";
@@ -132,6 +180,23 @@ onAuthStateChanged(auth, (user) => {
     // 로그인 상태일 때
     authButton.style.display = "none";
     userProfile.style.display = "flex";
+    // User is logged in
+    noGameDiv.style.display = "none";
+    gameDiv.style.display = "block";
+    gameFrame.style.display = "block";
+
+    // Attempt to load saved game data
+    const savedGameData = await loadGameData(user.uid);
+    if (savedGameData) {
+      // Send saved data to game iframe
+      gameFrame.contentWindow.postMessage(
+        {
+          type: "LOAD_GAME_DATA",
+          data: savedGameData,
+        },
+        "*"
+      );
+    }
   } else {
     // 로그아웃 상태일 때
     authButton.style.display = "block";
@@ -140,6 +205,9 @@ onAuthStateChanged(auth, (user) => {
     authButton.onclick = () => {
       loginModal.style.display = "block";
     };
+    noGameDiv.style.display = "block";
+    gameDiv.style.display = "none";
+    gameFrame.style.display = "none";
   }
 });
 
@@ -164,4 +232,14 @@ loginMethodChangeButton.addEventListener("click", () => {
 });
 document.querySelectorAll(".optional-field").forEach((field) => {
   field.style.display = isLoginMode ? "none" : "block";
+});
+
+// Event listener for game data saving
+window.addEventListener("message", async (event) => {
+  if (event.data.type === "SAVE_GAME_DATA") {
+    const user = auth.currentUser;
+    if (user) {
+      await saveGameData(user.uid, event.data.data);
+    }
+  }
 });

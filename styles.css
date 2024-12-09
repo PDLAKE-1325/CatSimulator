@@ -1,3 +1,6 @@
+html {
+  overflow: hidden;
+}
 body {
   user-select: none;
   font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui,
@@ -7,14 +10,15 @@ body {
   background-color: #f4f6f9;
   color: #333;
   height: 100vh;
+  overflow: hidden;
 }
-div.Game {
+div.noGame {
   user-select: none;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  display: flex;
+  display: none;
   box-sizing: border-box;
   align-items: center;
   text-align: center;
@@ -24,13 +28,27 @@ header {
   background-color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
+iframe {
+  position: absolute;
+  width: 91%;
+  /* height: calc(100vh - 0px); */
+  height: 91%;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+.Game {
+  display: flex;
+  justify-content: center;
+}
 nav {
+  position: relative;
   display: flex;
   align-items: center;
-  padding: 15px 5%;
-  max-width: 1200px;
+  padding: 0px 5%;
+  max-width: 1400px;
   margin: 0 auto;
+  z-index: 999;
 }
 
 .logo {
@@ -74,7 +92,6 @@ nav {
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-
 /* 로그인 안 했을 때 */
 .logged-out #auth-button {
   padding: 8px 16px;

@@ -9,11 +9,16 @@
   <body>
     <header>
       <nav>
-        <img src="/images/cat_sit.png" width="70" height="70" id="game-logo" />
+        <img
+          src="/images/Menu/cat_sit.png"
+          width="70"
+          height="70"
+          id="game-logo"
+        />
         <div class="logo">MyohanMemory</div>
         <ul class="nav-links">
-          <li><a href="#">게임</a></li>
-          <li><a href="#">채팅</a></li>
+          <!-- <li><a href="#">게임</a></li> -->
+          <!-- <li><a href="#">채팅</a></li> -->
         </ul>
         <div class="auth-section">
           <button id="auth-button">로그인</button>
@@ -25,15 +30,20 @@
         </div>
       </nav>
     </header>
-    <div class="Game">
+
+    <div class="noGame">
       <img
-        src="/images/cat_stand.png"
+        src="/images/Menu/cat_stand.png"
         width="140"
         height="140"
-        id="game-logo"
+        id="cat-stand"
       />
       <h2>로그인을 해주세요 ㅠㅠ</h2>
     </div>
+    <div class="Game">
+      <iframe id="game-frame" src="game.html"></iframe>
+    </div>
+
     <div id="login-modal" class="modal">
       <div class="modal-content">
         <span class="close-button">&times;</span>
