@@ -41,8 +41,6 @@ const logoutButton = document.getElementById("logout-btn");
 
 let isLoginMode = true;
 
-// 기존 모달 토글 및 로그인 모드 변경 코드 동일
-
 // Google Login
 googleLoginButton.addEventListener("click", () => {
   signInWithPopup(auth, googleProvider)
@@ -143,4 +141,27 @@ onAuthStateChanged(auth, (user) => {
       loginModal.style.display = "block";
     };
   }
+});
+
+closeButton.addEventListener("click", () => {
+  loginModal.style.display = "none";
+});
+
+// Toggle between login and signup modes
+loginMethodChangeButton.addEventListener("click", () => {
+  isLoginMode = !isLoginMode;
+
+  // Update modal text based on the mode
+  loginText.textContent = isLoginMode ? "로그인" : "회원가입";
+  loginSubmitButton.textContent = isLoginMode ? "로그인" : "회원가입";
+  loginMethodChangeButton.textContent = isLoginMode ? "회원가입" : "로그인";
+
+  // Toggle visibility of optional fields (e.g., email)
+  const optionalFields = document.querySelectorAll(".optional-field");
+  optionalFields.forEach((field) => {
+    field.style.display = isLoginMode ? "none" : "block";
+  });
+});
+document.querySelectorAll(".optional-field").forEach((field) => {
+  field.style.display = isLoginMode ? "none" : "block";
 });
