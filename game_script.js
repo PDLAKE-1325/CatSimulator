@@ -21,64 +21,30 @@ let happy_ = 0;
 let clean_ = 0;
 let love_ = 0;
 
-// 메시지 이벤트 리스너 업데이트
 window.addEventListener("message", (event) => {
-  switch (event.data.type) {
-    case "LOAD_GAME_DATA":
-      const gameData = event.data.data;
-      updateGauge(hungerBar, gameData.hunger, "배고픔", "orange", "hunger");
-      updateGauge(
-        happinessBar,
-        gameData.happiness,
-        "행복감",
-        "yellow",
-        "happiness"
-      );
-      updateGauge(
-        cleanlinessBar,
-        gameData.cleanliness,
-        "청결도",
-        "aqua",
-        "cleanliness"
-      );
-      love_ = gameData.love;
-      LikeText();
-      break;
+  if (event.data.type === "LOAD_GAME_DATA") {
+    const gameData = event.data.data;
 
-    case "INIT_GAME_DATA":
-      // 초기값으로 모든 게이지 리셋
-      updateGauge(hungerBar, 0, "배고픔", "orange", "hunger");
-      updateGauge(happinessBar, 0, "행복감", "yellow", "happiness");
-      updateGauge(cleanlinessBar, 0, "청결도", "aqua", "cleanliness");
-      love_ = 0;
-      LikeText();
-      break;
+    // Update gauges
+    updateGauge(hungerBar, gameData.hunger, "배고픔", "orange", "hunger");
+    updateGauge(
+      happinessBar,
+      gameData.happiness,
+      "행복감",
+      "yellow",
+      "happiness"
+    );
+    updateGauge(
+      cleanlinessBar,
+      gameData.cleanliness,
+      "청결도",
+      "aqua",
+      "cleanliness"
+    );
 
-    case "GET_GAME_DATA":
-      // 현재 게임 상태 부모 윈도우에 전송
-      window.parent.postMessage(
-        {
-          type: "CURRENT_GAME_DATA",
-          data: {
-            hunger: parseInt(hungerBar.style.width),
-            happiness: parseInt(happinessBar.style.width),
-            cleanliness: parseInt(cleanlinessBar.style.width),
-            love: love_,
-          },
-        },
-        "*"
-      );
-      break;
-
-    case "RESET_GAME_DATA":
-      // 모든 게이지 및 로컬 스토리지 초기화
-      updateGauge(hungerBar, 0, "배고픔", "orange", "hunger");
-      updateGauge(happinessBar, 0, "행복감", "yellow", "happiness");
-      updateGauge(cleanlinessBar, 0, "청결도", "aqua", "cleanliness");
-      love_ = 0;
-      LikeText();
-      localStorage.clear();
-      break;
+    // Update love
+    love_ = gameData.love;
+    LikeText();
   }
 });
 
